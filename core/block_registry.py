@@ -16,6 +16,7 @@ BLOCK_TYPES = {
     "_sun_molten_hydrogen_helium": {
         "color": [1.0, 0.8, 0.4],
         "emissive": 10.0,
+        "alpha" : 0.1,
         "is_emitter": True,
         "partial_occlusion": 0.0,
     },

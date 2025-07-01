@@ -1,6 +1,9 @@
 #block.py
+import numpy as np
+from pyrr import Matrix44
 from core.block_registry import BLOCK_TYPES
 from core.coordinates import gravity_vector_at, align_up_to_gravity
+from rendering.geometry import *
 
 def block_lookup_func(start_pos, end_pos, all_blocks, step=1.0):
     direction = end_pos - start_pos
@@ -28,9 +31,10 @@ def get_render_block(block, uv_scale=1.0):
 
 # Block lookup & light
 class Block:
-    def __init__(self, position, block_type="_default_"):
+    def __init__(self, position, block_type="_default_", scale=1.0):
         self.position = position
         self.block_type = block_type
+        self.scale = scale
         self.sub_blocks = []
         # Mesh setup
         self.vertices, self.indices = generate_cube()
@@ -65,36 +69,43 @@ class Block:
     def draw(self, shader_program):
         glUseProgram(shader_program)
 
+        # Get uniform location ONCE
+        loc_model = glGetUniformLocation(shader_program, "model")
+
+        # Create scale matrix and combine with model matrix
+        scale_matrix = Matrix44.from_scale([self.scale, self.scale, self.scale])
+        model = scale_matrix @ self.model_matrix
+
+        # Upload the combined model matrix (with scale)
+        glUniformMatrix4fv(loc_model, 1, GL_FALSE, model.astype(np.float32))
+
         # Bind VAO
         glBindVertexArray(self.vao)
 
-        # Set uniforms
-        loc_model = glGetUniformLocation(shader_program, "model")
-        glUniformMatrix4fv(loc_model, 1, GL_FALSE, self.model_matrix.astype(np.float32))
+        # Set other uniforms
+        glUniform3fv(glGetUniformLocation(shader_program, "color"), 1, self.color)
+        glUniform3fv(glGetUniformLocation(shader_program, "tint"), 1, self.tint)
+        glUniform1f(glGetUniformLocation(shader_program, "emissive"), self.emissive)
+        glUniform1f(glGetUniformLocation(shader_program, "alpha"), self.alpha)
+        glUniform1f(glGetUniformLocation(shader_program, "ambient_strength"), self.ambient_strength)
 
-        glUniform3fv(glGetUniformLocation(shader_program, " color"), 1, self.color)
-        glUniform3fv(glGetUniformLocation(shader_program, " tint"), 1, self.tint)
-        glUniform1f(glGetUniformLocation(shader_program, " emissive"), self.emissive)
-        glUniform1f(glGetUniformLocation(shader_program, " alpha"), self.alpha)
-        glUniform1f(glGetUniformLocation(shader_program, " ambient_strength"), self.ambient_strength)
-
-           # Bind color map to texture unit 0
+        # Bind textures if available
         if "color_map" in self.textures:
             glActiveTexture(GL_TEXTURE0)
             glBindTexture(GL_TEXTURE_2D, self.textures["color_map"])
-            glUniform1i(glGetUniformLocation(shader_program, " color_map"), 0)
+            glUniform1i(glGetUniformLocation(shader_program, "color_map"), 0)
 
-        # Bind grayscale map to texture unit 1
         if "grayscale_map" in self.textures:
             glActiveTexture(GL_TEXTURE1)
             glBindTexture(GL_TEXTURE_2D, self.textures["grayscale_map"])
-            glUniform1i(glGetUniformLocation(shader_program, " grayscale_map"), 1)
+            glUniform1i(glGetUniformLocation(shader_program, "grayscale_map"), 1)
 
-        # Draw
+        # Draw elements
         glDrawElements(GL_TRIANGLES, self.index_count, GL_UNSIGNED_INT, None)
 
         glBindVertexArray(0)
         glUseProgram(0)
+
 
     class SubBlock:
         def __init__(self, local_pos, size=0.1, sub_type="default"):

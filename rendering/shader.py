@@ -1,6 +1,7 @@
 #shader.py
+from OpenGL.GL import *
 
-def load_shader(vertex_path, fragment_path):
+def load_shaders(vertex_path, fragment_path):
         with open(vertex_path, 'r') as vf:
             vertex_src = vf.read()
         with open(fragment_path, 'r') as ff:

@@ -3,12 +3,14 @@
 import numpy as np
 from collections import defaultdict
 
-from world.block import Block
-from core.coordinates import world_to_face_grid_cell
 
 def gravity_vector_at(pos, center=np.zeros(3)):
     direction = center - np.array(pos)
-    return direction / np.linalg.norm(direction)
+    norm = np.linalg.norm(direction)
+    if norm == 0:
+        return np.array([0.0, -1.0, 0.0])  # fallback gravity direction
+    return direction / norm
+
 
 def get_adjacent_face(face_id, direction):
     """

@@ -4,6 +4,7 @@ import numpy as np
 from core.planet_projection import local_grid_to_normalized_uv, project_cube_to_sphere
 from world.block import Block
 from core.block_registry import BLOCK_TYPES
+from tqdm import tqdm
 
 def generate_sun_layers(
     radius=100.0,
@@ -18,13 +19,12 @@ def generate_sun_layers(
 ):
     """
     Generates a sun by layering concentric shells of blocks from large core to fine surface.
-    
-    radius: Total planet radius in world units.
-    layers: List of (block_size, grid_resolution) tuples.
-    block_type: Block type string to use (must be defined in BLOCK_TYPES).
     """
-
     blocks = []
+    
+    total_steps = sum(6 * res * res for _, res in layers)  # total iterations for progress bar
+    pbar = tqdm(total=total_steps, desc="Generating Sun Layers")
+
     for block_size, resolution in layers:
         shell_radius = radius - (block_size * 0.5)
 
@@ -34,8 +34,11 @@ def generate_sun_layers(
                     u, v = local_grid_to_normalized_uv(x, y, resolution)
                     pos = project_cube_to_sphere(face_id, u, v, resolution, shell_radius)
                     blocks.append(Block(position=pos, block_type=block_type))
+                    pbar.update(1)
 
+    pbar.close()
     return blocks
+
 
 # Layer definitions for rock planets (inside-out)
 LAYERS = [
@@ -45,7 +48,7 @@ LAYERS = [
 ]
 
 def get_block_for_radius(r_norm):
-    """Pick block type based on normalized radius (0–1)."""
+    """Pick block type based on normalized radius (0-1)."""
     for layer in LAYERS:
         if r_norm <= layer["radius"]:
             return layer["block"]

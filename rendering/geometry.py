@@ -1,4 +1,7 @@
 #geometry.py
+import numpy as np
+from OpenGL.GL import *
+from pyrr import Matrix44
 
 def generate_cube(uv_scale=1.0):
     positions = [
