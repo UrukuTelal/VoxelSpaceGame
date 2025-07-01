@@ -37,6 +37,45 @@ def generate_sun_layers(
 
     return blocks
 
+# Layer definitions for rock planets (inside-out)
+LAYERS = [
+    {"radius": 0.2, "block": "core_iron"},
+    {"radius": 0.5, "block": "mantle_rock"},
+    {"radius": 1.0, "block": "crust_stone"},
+]
+
+def get_block_for_radius(r_norm):
+    """Pick block type based on normalized radius (0–1)."""
+    for layer in LAYERS:
+        if r_norm <= layer["radius"]:
+            return layer["block"]
+    return "default"
+
+def generate_planet(radius=100.0, layers=LAYERS, chunk_manager=None):
+    """
+    Fill a spherical planet inside-out using ChunkManager.
+    """
+    from world.chunks import ChunkManager
+
+    if chunk_manager is None:
+        chunk_manager = ChunkManager()
+
+    # Cube normalized step based on chunk size and planet radius
+    step = chunk_manager.chunk_size / radius
+    for x in np.arange(-1.0, 1.0, step):
+        for y in np.arange(-1.0, 1.0, step):
+            for z in np.arange(-1.0, 1.0, step):
+                pos = np.array([x, y, z])
+                dist = np.linalg.norm(pos)
+                if dist > 1.0:
+                    continue
+
+                block_type = get_block_for_radius(dist)
+                block = Block(position=pos * radius, block_type=block_type)
+                chunk_manager.set_block_at(pos * radius, block)
+
+    return chunk_manager
+
 def sample_height_map(height_map_array, u, v):
     height_map_height, height_map_width = height_map_array.shape
     x = int(u * (height_map_width - 1))
