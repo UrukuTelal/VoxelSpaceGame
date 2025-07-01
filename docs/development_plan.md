@@ -59,34 +59,47 @@ Covered by gravity_vector_at() with world center assumed as source.
 
 ❌ Climate/evolution metadata not implemented
 
+✅ Milestone: Star System Structure (In Progress → Finalize)
+ Planet projection logic (spherical grid over cube faces).
+
+ World chunk system with block indexing.
+
+ Procedural terrain generation hooks.
+
+ Face adjacency with edge continuity across cube map.
+
+ Finalize per-face terrain seed continuity.
+
+ Enable per-planet configuration (radius, core scale, biome variance).
+
+ Implement orbital map layer for planet-level navigation and transitions.
+
+🧩 Milestone: Transition to Server/Client Architecture
+Begins after star system structure and generation are stable enough for gameplay integration.
+
+Phase 1: Localhost Integration (Singleplayer Hosting)
+ Detach simulation loop from rendering code (clean game state API).
+
+ Define GameServer class/module to host planetary systems.
+
+ Build GameClient layer that receives updates and sends actions.
+
+ Implement basic event queuing: movement, building, block modification.
+
+ Save/load local world state for persistent singleplayer sessions.
+
+ Debug inter-thread/world tick separation (for stable FPS).
+
+Phase 2: Basic Network Architecture
+ Convert localhost connection to TCP socket.
+
+ Define network protocol format (JSON first, upgradeable to binary later).
+
+ Test serialization of chunk state, player data, and inventory.
+
+ Synchronize terrain updates and entity logic between client/server.
+
+ Add a debug lobby to select server maps or test terrain.
 
 
-src/
-│
-│
-├── assets/     
-│   ├── 2k_sun_color.jpg - whites, yellows, reds, actual colormap of the sun
-│   ├── 2k_sun_color_inverted.jpg - inverted color, so blues
-│   └── 2k_sun_grayscale.jpg
-│
-├── core/
-│   ├── planet_projection.py      ← Sphere math, cube face projection, face adjacency
-│   ├── coordinates.py            ← Position -> face/grid/voxel conversions, gravity vector
-│   ├── block_types.py            ← BLOCK_TYPES, define_all_blocks, IDs
-│   ├── voxel_math.py             ← Helpers like snap_to_grid, direction vecs, face normals
-│   ├── constants.py
-│   └── block_types.py_
-│
-├── world/
-│   ├── block.py                  ← Block, SubBlock, ParticleBlock
-│   ├── chunks.py                  ← Future: Handles chunk loading/unloading
-│   ├── planet_generator.py       ← Builds a sun/planet inside-out using projection
-│
-├── rendering/
-│   ├── shaders/
-│   │   ├── cube.vert
-│   │   └── cube.frag
-│   ├── rendering.py              ← create_vao, draw logic
-│   └── texture_loader.py         ← Loads & binds textures
-│
-└── main.py                       ← Entry point (e.g. create Sun test, render loop)
+
