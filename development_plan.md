@@ -1,29 +1,65 @@
-﻿ Next Steps: What I Recommend Building First
-Spherical projection logic ✓
+﻿✅ Core World Architecture
+✅ Spherical projection logic
 
-Map cube faces to spherical shell✓
+Your planet_projection.py and world_to_face_grid handle cube-to-sphere math.
 
-Let’s build the math for that cleanly✓
+✅ Map cube faces to spherical shell
 
-Face & Block index system✓
+Done through face ID logic in coordinates.py + grid mapping.
 
-Face[6] -> Grid[x][y][z] -> Block
+✅ Let’s build the math for that cleanly
 
-With edge continuity between faces
+The math is modular and cleanly abstracted in coordinates.py and planet_projection.py.
 
-Planet prototype builder
+✅ Spatial Grid & Block System
+✅ Face & Block index system
 
-generate_planet(radius, layers, core_scale)
+Implemented with face_id → (x, y, z) logic and world_to_face_grid_cell.
 
-Builds inside-out: large to small blocks
+✅ Face[6] → Grid[x][y][z] → Block
 
-Player gravity/orientation logic
+chunks.py maps face IDs to block chunks with chunk-local (lx, ly, lz) lookups.
 
-Local gravity vector based on current position
+✅ With edge continuity between faces
 
-LODs & Lazy Loading (later)
+FACE_NEIGHBORS + get_neighbor_coords() in chunks.py correctly wraps edge lookups across cube faces.
 
-Procedural generation with per-block metadata for climate, evolution, etc.
+🧱 Planet Construction (In Progress)
+🔲 Planet prototype builder
+
+❌ generate_planet(radius, layers, core_scale) stub not yet implemented.
+
+Planned: iteratively fill concentric layers using face/grid logic.
+
+🔲 Builds inside-out: large to small blocks
+
+Not done yet, but logic should go inside planet_generator.py.
+
+🧍 Player Gravity & Orientation
+✅ Player gravity/orientation logic
+
+gravity_vector_at() + align_up_to_gravity() in coordinates.py covers this well.
+
+✅ Local gravity vector based on current position
+
+Covered by gravity_vector_at() with world center assumed as source.
+
+🧠 Optimization & World Generation (Upcoming)
+🔲 LODs & Lazy Loading (later)
+
+✅ LOD hook exists in chunk generation
+
+❌ Actual compute_lod() implementation pending
+
+❌ No in-engine chunk mesh LOD switching yet
+
+🔲 Procedural generation with per-block metadata for climate, evolution, etc.
+
+❌ Placeholder in chunk.generate()
+
+❌ Climate/evolution metadata not implemented
+
+
 
 src/
 │
