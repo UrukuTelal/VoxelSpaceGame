@@ -38,7 +38,7 @@ This document defines the gameplay mechanics of the Voxel Space Game. It focuses
 
 * Blueprint-based building system.
 * Construction scaffold grows with player tech level.
-* Ship/structure part integrity and connection logic.
+* Ship/structure part integrity and connection logic. 
 
 ### Tools:
 
