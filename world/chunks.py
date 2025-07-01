@@ -3,7 +3,13 @@
 from collections import defaultdict
 import numpy as np
 from world.block import Block
-from core.coordinates import world_to_face_grid_cell  # You should implement this
+from core.coordinates import world_to_face_grid_cell
+
+# --- Constants ---
+
+CHUNK_GRID_SIZE = 8  # Or however many blocks per side per chunk
+
+# --- Face adjacency map ---
 # At top of chunks.py, define cube face adjacency with flipping info
 # Format: (face_id, direction) -> (neighbor_face_id, flip_x, flip_y)
 # direction: one of '+x', '-x', '+y', '-y'
