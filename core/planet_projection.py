@@ -7,13 +7,48 @@ import numpy as np
 # Maps (face, direction) → (adjacent_face, axis_remap, flip_x, flip_y)
 # direction: (dx, dy) from grid movement
 
+# Each key: (face_id, edge_direction)
+# edge_direction is one of: '+x', '-x', '+y', '-y'  (cube face local edges)
+# Value: (neighbor_face_id, flip_x: bool, flip_y: bool)
+
+# flip_x and flip_y indicate whether to invert the local coordinate axis when crossing the edge.
+# This depends on how the faces align on the cube.
+
 FACE_NEIGHBORS = {
-    (0, (1, 0)): (4, False, False),  # Right on +Z → +X
-    (0, (-1, 0)): (5, False, False), # Left on +Z → -X
-    (0, (0, 1)): (2, False, False),  # Up on +Z → +Y
-    (0, (0, -1)): (3, False, False), # Down on +Z → -Y
-    # ... repeat for other faces
-}
+    # face 0 (+Z)
+    (0, '+x'): (4, False, False),  # right edge of face 0 goes to face 4
+    (0, '-x'): (5, False, True),   # left edge of face 0 goes to face 5, flip y
+    (0, '+y'): (2, False, False),  # top edge of face 0 goes to face 2
+    (0, '-y'): (3, False, False),  # bottom edge of face 0 goes to face 3
+
+    # face 1 (-Z)
+    (1, '+x'): (5, False, False),
+    (1, '-x'): (4, False, True),
+    (1, '+y'): (2, False, True),
+    (1, '-y'): (3, False, True),
+
+    # face 2 (+Y)
+    (2, '+x'): (4, True, False),
+    (2, '-x'): (5, True, True),
+    (2, '+y'): (1, False, False),
+    (2, '-y'): (0, False, False),
+
+    # face 3 (-Y)
+    (3, '+x'): (4, False, False),
+    (3, '-x'): (5, False, True),
+    (3, '+y'): (0, False, False),
+    (3, '-y'): (1, False, False),
+
+    # face 4 (+X)
+    (4, '+x'): (1, False, False),
+    (4, '-x'): (0, False, True),
+    (4, '+y'): (2, False, False),
+    (4, '-y'): (3, True, False),
+
+    # face 5 (-X)
+    (5, '+x'): (0, False, False),
+    (5, '-x'): (1, False
+
 
 def cube_face_to_direction(face_id):
     """Returns the unit vector direction of each face center."""
