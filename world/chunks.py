@@ -8,6 +8,18 @@ from core.coordinates import world_to_face_grid_cell  # You should implement thi
 # Format: (face_id, direction) -> (neighbor_face_id, flip_x, flip_y)
 # direction: one of '+x', '-x', '+y', '-y'
 
+# Face ID legend:
+# 0: +Z, 1: -Z, 2: +Y, 3: -Y, 4: +X, 5: -X
+
+# Maps (face, direction) → (adjacent_face, axis_remap, flip_x, flip_y)
+# direction: (dx, dy) from grid movement
+
+# Each key: (face_id, edge_direction)
+# edge_direction is one of: '+x', '-x', '+y', '-y'  (cube face local edges)
+# Value: (neighbor_face_id, flip_x: bool, flip_y: bool)
+
+# flip_x and flip_y indicate whether to invert the local coordinate axis when crossing the edge.
+# This depends on how the faces align on the cube.
 FACE_NEIGHBORS = {
     (0, '+x'): (4, False, False),
     (0, '-x'): (5, True, False),
@@ -43,35 +55,38 @@ FACE_NEIGHBORS = {
 def get_neighbor_coords(face_id, x, y, z, dx, dy, dz):
     new_x, new_y, new_z = x + dx, y + dy, z + dz
 
-    if 0 <= new_x < CHUNK_GRID_SIZE and 0 <= new_y < CHUNK_GRID_SIZE and 0 <= new_z < CHUNK_GRID_SIZE:
+    if 0 <= new_x < CHUNK_GRID_SIZE and 0 <= new_y < CHUNK_GRID_SIZE:
         return face_id, new_x, new_y, new_z
 
-    # Determine which face edge we're crossing
+    # Crossing face edge: determine which edge was crossed
     if new_x < 0:
-        neighbor_face, flip_x, flip_y = FACE_NEIGHBORS[(face_id, '-x')]
-        new_x = CHUNK_GRID_SIZE - 1
-        if flip_x:
-            new_y = CHUNK_GRID_SIZE - 1 - new_y
+        edge = '-x'
     elif new_x >= CHUNK_GRID_SIZE:
-        neighbor_face, flip_x, flip_y = FACE_NEIGHBORS[(face_id, '+x')]
-        new_x = 0
-        if flip_x:
-            new_y = CHUNK_GRID_SIZE - 1 - new_y
-
-    if new_y < 0:
-        neighbor_face, flip_x, flip_y = FACE_NEIGHBORS[(face_id, '-y')]
-        new_y = CHUNK_GRID_SIZE - 1
-        if flip_y:
-            new_x = CHUNK_GRID_SIZE - 1 - new_x
+        edge = '+x'
+    elif new_y < 0:
+        edge = '-y'
     elif new_y >= CHUNK_GRID_SIZE:
-        neighbor_face, flip_x, flip_y = FACE_NEIGHBORS[(face_id, '+y')]
-        new_y = 0
-        if flip_y:
-            new_x = CHUNK_GRID_SIZE - 1 - new_x
+        edge = '+y'
+    else:
+        return None  # no crossing
 
-    # new_z stays the same (or apply logic if needed)
+    key = (face_id, edge)
+    if key not in FACE_NEIGHBORS:
+        return None  # fallback
+
+    neighbor_face, flip_x, flip_y = FACE_NEIGHBORS[key]
+
+    # Wrap coordinates inside grid size
+    new_x %= CHUNK_GRID_SIZE
+    new_y %= CHUNK_GRID_SIZE
+
+    if flip_x:
+        new_x = CHUNK_GRID_SIZE - 1 - new_x
+    if flip_y:
+        new_y = CHUNK_GRID_SIZE - 1 - new_y
 
     return neighbor_face, new_x, new_y, new_z
+
 
 
 
