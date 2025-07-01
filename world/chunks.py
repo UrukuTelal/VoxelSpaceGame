@@ -9,23 +9,12 @@ from core.coordinates import world_to_face_grid_cell
 
 CHUNK_GRID_SIZE = 8  # Or however many blocks per side per chunk
 
-# --- Face adjacency map ---
-# At top of chunks.py, define cube face adjacency with flipping info
-# Format: (face_id, direction) -> (neighbor_face_id, flip_x, flip_y)
-# direction: one of '+x', '-x', '+y', '-y'
+# --- Cube Face Adjacency Map ---
+# Maps (face_id, direction) → (adjacent_face_id, flip_x, flip_y)
+# Face IDs: 0=+Z, 1=-Z, 2=+Y, 3=-Y, 4=+X, 5=-X
+# Directions are face-local edge names: '+x', '-x', '+y', '-y'
+# flip_x/flip_y indicate whether to mirror the coordinate when crossing to the neighbor face
 
-# Face ID legend:
-# 0: +Z, 1: -Z, 2: +Y, 3: -Y, 4: +X, 5: -X
-
-# Maps (face, direction) → (adjacent_face, axis_remap, flip_x, flip_y)
-# direction: (dx, dy) from grid movement
-
-# Each key: (face_id, edge_direction)
-# edge_direction is one of: '+x', '-x', '+y', '-y'  (cube face local edges)
-# Value: (neighbor_face_id, flip_x: bool, flip_y: bool)
-
-# flip_x and flip_y indicate whether to invert the local coordinate axis when crossing the edge.
-# This depends on how the faces align on the cube.
 FACE_NEIGHBORS = {
     (0, '+x'): (4, False, False),
     (0, '-x'): (5, True, False),
