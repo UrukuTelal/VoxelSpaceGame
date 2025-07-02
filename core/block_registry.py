@@ -20,12 +20,7 @@ BLOCK_TYPES = {
         "is_emitter": True,
         "partial_occlusion": 0.0,
     },
-    "_star_molten_hydrogen_helium" : {
-        "color": [1.0, 0.8, 0.4],
-        "emissive": 10.0,
-        "is_emitter": True,
-        "partial_occlusion": 0.0
-    },
+   
     }
     # ... add others here
 

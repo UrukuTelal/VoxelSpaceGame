@@ -5,7 +5,7 @@ from core.block_registry import BLOCK_TYPES
 from core.coordinates import gravity_vector_at, align_up_to_gravity
 from rendering.geometry import *
 
-def block_lookup_func(start_pos, end_pos, all_blocks, step=1.0):
+def block_lookup_func(start_pos, end_pos, blocks, step=1.0):
     direction = end_pos - start_pos
     length = np.linalg.norm(direction)
     if length == 0:
@@ -17,7 +17,7 @@ def block_lookup_func(start_pos, end_pos, all_blocks, step=1.0):
 
     for i in range(steps):
         pos = start_pos + direction * (i * step)
-        for block in all_blocks:
+        for block in blocks:
             if np.linalg.norm(block.position - pos) < step * 0.5:
                 blocks_in_path.append(block)
                 break

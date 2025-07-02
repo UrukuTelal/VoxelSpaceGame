@@ -1,6 +1,6 @@
 #block_types.py
 
-def define_all_blocks(star_color_tex, star_gray_tex):
+def define_blocks(star_color_tex, star_gray_tex):
     # Define which block types are light emitters
     LIGHT_EMITTERS = set([
             "_sun_"
@@ -40,4 +40,4 @@ def define_all_blocks(star_color_tex, star_gray_tex):
         
    
 # Copy to after initialization
-# define_all_blocks()
+# define_blocks()

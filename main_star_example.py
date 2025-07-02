@@ -15,6 +15,7 @@ from core.block_registry import BLOCK_TYPES
 from rendering.shader import load_shaders
 from core.coordinates import *
 from world.planet_generator import generate_sun_layers
+from rendering.geometry import generate_cube
 # Window settings
 WINDOW_SIZE = (800, 600)
 
@@ -40,7 +41,7 @@ def main():
     # Setup projection and view matrices (perspective camera)
     proj = Matrix44.perspective_projection(45.0, WINDOW_SIZE[0]/WINDOW_SIZE[1], 0.1, 1000.0)
     view = Matrix44.look_at(
-        eye=[150.0, 150.0, 150.0],
+        eye=[90.0, 90.0, 90.0],
         target=[0.0, 0.0, 0.0],
         up=[0.0, 1.0, 0.0]
     )
@@ -63,7 +64,7 @@ def main():
     running = True
 
     while running:
-        dt = clock.tick(60) / 1000.0  # delta time in seconds
+        dt = clock.tick(144) / 1000.0  # delta time in seconds
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

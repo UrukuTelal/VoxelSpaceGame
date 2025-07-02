@@ -15,7 +15,8 @@ def generate_sun_layers(
         (0.5, 32),
         (0.25, 64),
     ],
-    block_type="_sun_molten_hydrogen_helium"
+    block_type="_sun_molten_hydrogen_helium",
+    block_size =5.0,
 ):
     """
     Generates a sun by layering concentric shells of blocks from large core to fine surface.
@@ -23,7 +24,7 @@ def generate_sun_layers(
     blocks = []
     
     total_steps = sum(6 * res * res for _, res in layers)  # total iterations for progress bar
-    pbar = tqdm(total=total_steps, desc="Generating Sun Layers")
+    pbar = tqdm(total=total_steps, desc="Generating Sun")
 
     for block_size, resolution in layers:
         shell_radius = radius - (block_size * 0.5)
