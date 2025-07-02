@@ -9,11 +9,12 @@ PROMPTS = {
     "check_repo": "check the repo history, ",
     "update": "update the development plan, ",
     "complete": "if milestone was completed, ",
-    "continue": "continue to next milestone, "
+    "continue": "continue to next milestone, ",
+    "apply_patch": "apply full patch to: "
 }
 
-reference0 = "reference: https://github.com/UrukuTelal/VoxelSpaceGame, "
-website0 = "website: https://github.com/UrukuTelal/VoxelSpaceGame, "
+reference0 = "reference: /VoxelSpaceGame, "
+website0 = "website: https://github.com/UrukuTelal/, "
 
 files = {
     "api": "api.readme",
