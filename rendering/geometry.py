@@ -85,3 +85,7 @@ def create_vao(vertices, indices):
 
     glBindVertexArray(0)
     return vao, vbo, ebo
+
+
+
+
