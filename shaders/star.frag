@@ -128,6 +128,7 @@ vec2 get_sphere_uv(vec3 pos) {
 }
 
 void main() {
+    
     float noiseVal = perlin_noise(vec3(frag_position.x * scale, frag_position.y * scale, time));
 
     vec3 N = normalize(frag_normal);
